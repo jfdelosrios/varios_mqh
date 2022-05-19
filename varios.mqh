@@ -6,6 +6,10 @@
 #property copyright "Copyright 2022, MetaQuotes Software Corp."
 #property link      "https://www.mql5.com"
 #property strict
+
+#include <Trade\Trade.mqh>
+
+
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -132,5 +136,50 @@ bool EnviarMensaje(
       );
 
    return true;
+  }
+
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void CerrarTodasLasPosiciones()
+  {
+
+   CTrade m_orden;
+
+   CPositionInfo positionInfo;
+
+   for(int _cont = (PositionsTotal() - 1); _cont >= 0; _cont--)
+     {
+
+      if(!positionInfo.SelectByIndex(_cont))
+        {
+         Print(__FUNCTION__ + ", error "+IntegerToString(_LastError));
+
+         if(_LastError == ERR_TRADE_POSITION_NOT_FOUND)
+            ResetLastError();
+
+         continue;
+        }
+
+      positionInfo.StoreState();
+
+      if(!m_orden.PositionClose(
+            positionInfo.Ticket(),
+            100
+         ))
+        {
+
+         m_orden.PrintResult();
+
+         Print("!PositionClose " + IntegerToString(_LastError));
+
+         if(!MQLInfoInteger(MQL_TESTER))
+            ResetLastError();
+
+        }
+
+     }
+
   }
 //+------------------------------------------------------------------+
