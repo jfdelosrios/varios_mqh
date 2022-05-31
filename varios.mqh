@@ -142,8 +142,10 @@ bool EnviarMensaje(
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void CerrarTodasLasPosiciones()
+bool CerrarTodasLasPosiciones()
   {
+
+   bool _salida = true;
 
    CTrade m_orden;
 
@@ -158,6 +160,8 @@ void CerrarTodasLasPosiciones()
 
          if(_LastError == ERR_TRADE_POSITION_NOT_FOUND)
             ResetLastError();
+
+         _salida = false;
 
          continue;
         }
@@ -177,9 +181,13 @@ void CerrarTodasLasPosiciones()
          if(!MQLInfoInteger(MQL_TESTER))
             ResetLastError();
 
+         _salida = false;
+
         }
 
      }
+
+   return _salida;
 
   }
 //+------------------------------------------------------------------+
